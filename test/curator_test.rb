@@ -3,6 +3,7 @@ require 'minitest/pride'
 require './lib/photograph'
 require './lib/artist'
 require './lib/curator'
+require 'csv'
 require 'pry'
 
 class CuratorTest < Minitest::Test
@@ -149,9 +150,31 @@ class CuratorTest < Minitest::Test
   end
 
   def test_it_loads_photographs
+    @curator.load_photographs('./data/photograph_data.csv')
+
+    assert_equal 5, @curator.photographs.count
   end
 
   def test_it_loads_artists
-  end 
+    @curator.load_artists('./data/artist_data.csv')
+
+    assert_equal 2, @curator.artists.count
+  end
+
+  def test_it_returns_photos_from_date_range
+    @curator.add_photograph(@photo_1)
+    @curator.add_photograph(@photo_2)
+    @curator.add_photograph(@photo_3)
+    @curator.add_photograph(@photo_4)
+    @curator.add_artist(@artist_1)
+    @curator.add_artist(@artist_2)
+    @curator.add_artist(@artist_3)
+    photo1954 = @curator.find_photograph_by_id("1")
+    photo1941 = @curator.find_photograph_by_id("2")
+    photo1967 = @curator.find_photograph_by_id("3")
+    photo1962 = @curator.find_photograph_by_id("4")
+
+    assert_equal [photo1954], @curator.photographs_taken_between(1950..1960)
+  end
 
 end

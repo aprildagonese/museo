@@ -1,3 +1,5 @@
+require 'csv'
+
 class Curator
   attr_reader :artists, :photographs
 
@@ -46,7 +48,24 @@ class Curator
       end
     end
     photos
-  end 
+  end
 
+  def load_photographs(file)
+    CSV.foreach(file, headers: true, header_converters: :symbol) do |row|
+      add_photograph(row)
+    end
+  end
+
+  def load_artists(file)
+    CSV.foreach(file, headers: true, header_converters: :symbol) do |row|
+      add_artist(row)
+    end
+  end
+
+  def photographs_taken_between(a..b)
+    @photographs.select do |photograph|
+      a > photograph.year > b
+    end
+  end 
 
 end
